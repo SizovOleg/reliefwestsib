@@ -1,0 +1,13 @@
+{% load wagtailimages_tags %}
+<div class="gallery">
+    {% if value.title %}<h3>{{ value.title }}</h3>{% endif %}
+    <div class="gallery-grid">
+        {% for img in value.images %}
+            {% image img width-300 as thumb %}
+            {% image img width-1200 as full %}
+            <a href="{{ full.url }}" class="gallery-item">
+                <img src="{{ thumb.url }}" alt="">
+            </a>
+        {% endfor %}
+    </div>
+</div>

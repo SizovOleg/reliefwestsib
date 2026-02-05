@@ -1,0 +1,5 @@
+{% load wagtailimages_tags %}
+<section class="hero" {% if value.background_image %}style="background-image: url('{% image value.background_image width-1920 as bg %}{{ bg.url }}')"{% endif %}>
+    <h1>{{ value.title }}</h1>
+    {% if value.subtitle %}<p class="subtitle">{{ value.subtitle }}</p>{% endif %}
+</section>

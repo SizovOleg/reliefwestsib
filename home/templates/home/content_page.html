@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags %}
+
+{% block content %}
+    <section class="page-hero">
+        <div class="page-hero-content">
+            <h1 class="page-title">{{ page.title }}</h1>
+            {% if page.subtitle %}<p class="page-subtitle">{{ page.subtitle }}</p>{% endif %}
+        </div>
+    </section>
+    
+    <div class="content-wrapper">
+        <article class="content">
+            {% for block in page.content %}
+                {% include_block block %}
+            {% endfor %}
+            
+            {% if not page.content %}
+                <p>Содержимое страницы пока не добавлено. Откройте редактор для добавления контента.</p>
+            {% endif %}
+        </article>
+    </div>
+{% endblock %}

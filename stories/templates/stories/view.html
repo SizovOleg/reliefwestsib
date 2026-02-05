@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ story.title }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Source Sans 3', sans-serif;
+            background: #f4f6f8;
+            color: #2c3e50;
+            line-height: 1.7;
+        }
+        
+        .story-header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3d5060 100%);
+            color: white;
+            padding: 80px 20px;
+            text-align: center;
+        }
+        
+        .story-header h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 2.8rem;
+            margin-bottom: 16px;
+        }
+        
+        .story-header .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+        }
+        
+        .story-meta {
+            margin-top: 30px;
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        .story-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+        
+        .block {
+            margin-bottom: 30px;
+        }
+        
+        .block h1 {
+            font-family: 'Merriweather', serif;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        .block h2 {
+            font-family: 'Merriweather', serif;
+            font-size: 1.6rem;
+            margin-bottom: 16px;
+            color: #2c3e50;
+        }
+        
+        .block h3 {
+            font-size: 1.3rem;
+            margin-bottom: 12px;
+            color: #3d5060;
+        }
+        
+        .block p {
+            font-size: 1.1rem;
+            color: #3d5060;
+            margin-bottom: 16px;
+        }
+        
+        .block img {
+            max-width: 100%;
+            border-radius: 4px;
+        }
+        
+        .block-map {
+            width: 100%;
+            height: 500px;
+            border: 1px solid #d0d9e0;
+            border-radius: 4px;
+        }
+        
+        .block-quote {
+            border-left: 4px solid #5a8fa8;
+            padding-left: 20px;
+            font-style: italic;
+            color: #5a6c7d;
+        }
+        
+        .block-delimiter {
+            text-align: center;
+            padding: 30px 0;
+            color: #b0bcc5;
+        }
+        
+        .back-link {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: rgba(255,255,255,0.9);
+            padding: 10px 16px;
+            border-radius: 4px;
+            color: #2c3e50;
+            text-decoration: none;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .back-link:hover {
+            background: white;
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="back-link">← На главную</a>
+    
+    <header class="story-header">
+        <h1>{{ story.title }}</h1>
+        {% if story.subtitle %}
+        <p class="subtitle">{{ story.subtitle }}</p>
+        {% endif %}
+        <div class="story-meta">
+            {% if story.author %}{{ story.author }} · {% endif %}
+            {{ story.updated_at|date:"d.m.Y" }}
+        </div>
+    </header>
+    
+    <article class="story-content">
+        {% for block in story.content.blocks %}
+            <div class="block">
+                {% if block.type == 'header' %}
+                    <h{{ block.data.level }}>{{ block.data.text }}</h{{ block.data.level }}>
+                
+                {% elif block.type == 'paragraph' %}
+                    <p>{{ block.data.text|safe }}</p>
+                
+                {% elif block.type == 'image' %}
+                    <img src="{{ block.data.file.url }}" alt="{{ block.data.caption }}">
+                    {% if block.data.caption %}<p style="text-align:center;color:#8899a6;font-size:0.9rem;">{{ block.data.caption }}</p>{% endif %}
+                
+                {% elif block.type == 'map' %}
+                    <iframe class="block-map" src="{{ block.data.url }}" frameborder="0"></iframe>
+                
+                {% elif block.type == 'quote' %}
+                    <blockquote class="block-quote">
+                        <p>{{ block.data.text }}</p>
+                        {% if block.data.caption %}<cite>— {{ block.data.caption }}</cite>{% endif %}
+                    </blockquote>
+                
+                {% elif block.type == 'delimiter' %}
+                    <div class="block-delimiter">* * *</div>
+                
+                {% elif block.type == 'list' %}
+                    {% if block.data.style == 'ordered' %}
+                    <ol>{% for item in block.data.items %}<li>{{ item }}</li>{% endfor %}</ol>
+                    {% else %}
+                    <ul>{% for item in block.data.items %}<li>{{ item }}</li>{% endfor %}</ul>
+                    {% endif %}
+                {% endif %}
+            </div>
+        {% empty %}
+            <p style="color:#8899a6;text-align:center;">История пока пуста</p>
+        {% endfor %}
+    </article>
+</body>
+</html>

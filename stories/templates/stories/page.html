@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if page %}{{ page.title }} | Relief West Siberia{% else %}Страница не найдена{% endif %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #e8ecef;
+            --bg-primary: #f4f6f8;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #eef2f5;
+            --accent: #5a8fa8;
+            --accent-light: #7eb3c9;
+            --accent-dark: #3d6a80;
+            --accent-warm: #a89078;
+            --text-primary: #2c3e50;
+            --text-secondary: #5a6c7d;
+            --text-muted: #8899a6;
+            --border: #d0d9e0;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.7;
+        }
+        
+        /* Навигация */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: #2c3e50;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+        }
+        
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+        
+        .nav-logo-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--accent);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 32px;
+        }
+        
+        .nav-link {
+            color: rgba(255,255,255,0.85);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 8px 0;
+            transition: color 0.2s;
+        }
+        
+        .nav-link:hover {
+            color: #ffffff;
+        }
+        
+        /* Hero секция */
+        .hero {
+            margin-top: 70px;
+            padding: 80px 40px;
+            background: linear-gradient(135deg, #3d5060 0%, #2c3e50 100%);
+            color: white;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+        
+        .hero .subtitle {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Контент */
+        .content-wrapper {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 60px 40px;
+        }
+        
+        .content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 50px;
+        }
+        
+        .content h1 {
+            font-size: 2.2rem;
+            color: var(--text-primary);
+            margin-bottom: 24px;
+            font-weight: 700;
+        }
+        
+        .content h2 {
+            font-size: 1.6rem;
+            color: var(--text-primary);
+            margin: 40px 0 20px;
+            font-weight: 600;
+        }
+        
+        .content h3 {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            margin: 30px 0 16px;
+            font-weight: 600;
+        }
+        
+        .content p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.8;
+        }
+        
+        .content img {
+            max-width: 100%;
+            border-radius: 4px;
+            margin: 30px 0;
+            border: 1px solid var(--border);
+        }
+        
+        .content blockquote {
+            border-left: 4px solid var(--accent);
+            padding: 20px 30px;
+            margin: 30px 0;
+            background: var(--bg-tertiary);
+            border-radius: 0 4px 4px 0;
+            font-style: italic;
+            color: var(--text-secondary);
+        }
+        
+        .content ul, .content ol {
+            margin: 20px 0 20px 30px;
+            color: var(--text-secondary);
+        }
+        
+        .content li {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        
+        .content a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        
+        .content a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Блок карты */
+        .map-block {
+            margin: 40px -50px;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .map-block iframe {
+            width: 100%;
+            height: 500px;
+            border: none;
+            display: block;
+        }
+        
+        /* Футер */
+        .footer {
+            background: #d0d9e0;
+            padding: 40px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        
+        .footer a {
+            color: var(--accent-dark);
+            text-decoration: none;
+        }
+        
+        /* Пустая страница */
+        .empty-page {
+            text-align: center;
+            padding: 100px 40px;
+            color: var(--text-muted);
+        }
+        
+        .empty-page h1 {
+            font-size: 2rem;
+            margin-bottom: 16px;
+        }
+        
+        /* Кнопка редактирования */
+        .edit-btn {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--accent);
+            color: white;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            text-decoration: none;
+            font-size: 1.2rem;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0.4;
+            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        
+        .edit-btn:hover {
+            opacity: 1;
+            transform: scale(1.1);
+        }
+        
+        /* Адаптив */
+        @media (max-width: 768px) {
+            .nav { padding: 0 20px; }
+            .nav-links { gap: 16px; }
+            .hero { padding: 60px 20px; }
+            .hero h1 { font-size: 2rem; }
+            .content-wrapper { padding: 30px 20px; }
+            .content { padding: 30px; }
+            .map-block { margin: 30px -30px; }
+        }
+    
+        /* Тёмная тема */
+        body.dark-theme {
+            --bg-dark: #0a0a0f;
+            --bg-primary: #12121a;
+            --bg-secondary: #1a1a2e;
+            --bg-tertiary: #252542;
+            --accent: #5a8fa8;
+            --accent-light: #7eb3c9;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: #334155;
+            background: var(--bg-primary);
+        }
+        
+        body.dark-theme .nav {
+            background: #0a0a0f;
+        }
+        
+        body.dark-theme .hero {
+            background: linear-gradient(135deg, #1a1a2e 0%, #0a0a0f 100%);
+        }
+        
+        body.dark-theme .content {
+            background: var(--bg-secondary);
+            border-color: var(--border);
+        }
+        
+        body.dark-theme .footer {
+            background: #0a0a0f;
+        }
+        
+        /* Переключатель темы */
+        .theme-toggle {
+            background: rgba(255,255,255,0.15);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            transition: background 0.2s;
+        }
+        
+        .theme-toggle:hover {
+            background: rgba(255,255,255,0.25);
+        }
+
+    </style>
+</head>
+<body>
+    <nav class="nav">
+        <a href="/" class="nav-logo">
+            <div class="nav-logo-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                    <path d="M12 2L2 7v10l10 5 10-5V7L12 2zm0 18.5L4 16V8.5l8 4v8zm0-9.5L4.5 7 12 3.5 19.5 7 12 11zm8 5l-8 4.5v-8l8-4V16z"/>
+                </svg>
+            </div>
+            Relief West Siberia
+        </a>
+        <div class="nav-links" id="main-nav"></div>
+        <button class="theme-toggle" onclick="toggleTheme()" title="Переключить тему" id="themeBtn">🌙</button>
+    </nav>
+    
+    {% if page %}
+    <section class="hero">
+        <h1>{{ page.title }}</h1>
+        {% if page.subtitle %}<p class="subtitle">{{ page.subtitle }}</p>{% endif %}
+    </section>
+    
+    <div class="content-wrapper">
+        <article class="content">
+            {% if page.content.html %}
+                {{ page.content.html|safe }}
+            {% else %}
+                <p style="color: var(--text-muted); text-align: center;">Содержимое страницы пока не добавлено</p>
+            {% endif %}
+            
+            {% for block in page.content.blocks %}
+                {% if block.type == 'map' %}
+                    <div class="map-block">
+                        <iframe src="{{ block.url }}"></iframe>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </article>
+    </div>
+    
+    {% if user.is_staff %}
+    <a href="/page-editor/{{ page.id }}/" class="edit-btn" title="Редактировать">✎</a>
+    {% endif %}
+    
+    {% else %}
+    <section class="hero">
+        <h1>Страница не найдена</h1>
+    </section>
+    <div class="empty-page">
+        <p>Запрошенная страница не существует или была удалена</p>
+    </div>
+    {% endif %}
+    
+    <footer class="footer">
+        <p>© 2026 Relief West Siberia · Западно-Сибирская равнина — ледниковые системы</p>
+    </footer>
+    
+    <script>
+        fetch('/api/pages/')
+            .then(r => r.json())
+            .then(data => {
+                const nav = document.getElementById('main-nav');
+                const mainPages = data.pages.filter(p => p.menu_position === 'main');
+                mainPages.sort((a, b) => a.menu_order - b.menu_order);
+                mainPages.forEach(p => {
+                    const a = document.createElement('a');
+                    a.href = p.page_type === 'home' ? '/' : '/p/' + p.slug + '/';
+                    a.textContent = p.title;
+                    a.className = 'nav-link';
+                    nav.appendChild(a);
+                });
+            });
+    
+        // Тема
+        function toggleTheme() {
+            const isDark = document.body.classList.toggle('dark-theme');
+            localStorage.setItem('darkTheme', isDark);
+            document.getElementById('themeBtn').textContent = isDark ? '☀️' : '🌙';
+        }
+        
+        // Загрузка сохранённой темы
+        if (localStorage.getItem('darkTheme') === 'true') {
+            document.body.classList.add('dark-theme');
+            document.getElementById('themeBtn').textContent = '☀️';
+        }
+
+    </script>
+</body>
+</html>

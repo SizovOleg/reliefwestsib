@@ -1,0 +1,4 @@
+<div class="map-block">
+    {% if value.title %}<h3>{{ value.title }}</h3>{% endif %}
+    <iframe src="{{ value.map_url }}" style="width: 100%; height: {{ value.height }}; border: none;"></iframe>
+</div>

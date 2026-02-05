@@ -1,0 +1,19 @@
+[Unit]
+Description=Gunicorn Geoportal Admin
+After=network.target postgresql.service
+
+[Service]
+Type=notify
+User=root
+Group=root
+WorkingDirectory=/opt/geoportal_admin
+Environment="PATH=/opt/geodjango/bin"
+ExecStart=/opt/geodjango/bin/gunicorn geoportal_admin.wsgi:application \
+    --bind 127.0.0.1:8000 \
+    --workers 2 \
+    --timeout 120
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

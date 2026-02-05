@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags %}
+
+{% block content %}
+    <section class="hero">
+        <h1>{{ page.title }}</h1>
+    </section>
+    
+    <div class="content-wrapper">
+        <article class="content">
+            {% if page.intro %}
+                {{ page.intro|richtext }}
+            {% endif %}
+            
+            <div class="publications-list">
+                {% for pub in publications %}
+                    <div class="publication-item">
+                        <p class="pub-authors">{{ pub.authors }}</p>
+                        <h3>{{ pub.title }}</h3>
+                        <p class="pub-meta">
+                            {{ pub.journal }}{% if pub.volume %}, {{ pub.volume }}{% endif %}{% if pub.pages %}: {{ pub.pages }}{% endif %}. {{ pub.year }}
+                        </p>
+                        {% if pub.doi %}<a href="https://doi.org/{{ pub.doi }}" target="_blank">DOI: {{ pub.doi }}</a>{% endif %}
+                    </div>
+                {% empty %}
+                    <p>Публикации пока не добавлены</p>
+                {% endfor %}
+            </div>
+        </article>
+    </div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    .publication-item {
+        padding: 24px 0;
+        border-bottom: 1px solid var(--border);
+    }
+    .publication-item:last-child { border-bottom: none; }
+    .pub-authors { color: var(--text-muted); margin-bottom: 8px; }
+    .publication-item h3 { margin: 0 0 8px; font-size: 1.1rem; }
+    .pub-meta { color: var(--text-secondary); font-size: 0.95rem; }
+    .publication-item a { color: var(--accent); }
+</style>
+{% endblock %}

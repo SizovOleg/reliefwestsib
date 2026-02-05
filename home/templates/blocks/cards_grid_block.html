@@ -1,0 +1,8 @@
+<section class="cards-grid-section">
+    {% if value.title %}<h2>{{ value.title }}</h2>{% endif %}
+    <div class="cards-grid">
+        {% for card in value.cards %}
+            {% include "blocks/card_block.html" with value=card %}
+        {% endfor %}
+    </div>
+</section>
