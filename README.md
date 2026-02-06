@@ -1,121 +1,82 @@
-# Relief West Siberia — Геопортал
+# ReliefWestSib — Геопортал ледниковых систем Западной Сибири
 
-Научно-образовательный геопортал по геоморфологии Западно-Сибирской равнины.
-
-**URL:** https://reliefwestsib.ru
-
-## Описание
-
-Реконструкция границ плейстоценовых оледенений Западно-Сибирской равнины по геологическим и палеоклиматическим данным. Проект включает интерактивную карту с векторными и растровыми слоями, систему управления контентом и базу публикаций.
+Веб-ГИС платформа для визуализации и анализа геоморфологических данных плейстоценовых оледенений Западно-Сибирской равнины.
 
 ## Стек технологий
 
-- **Backend:** Django 6.0 + GeoDjango + Django REST Framework
-- **CMS:** Wagtail 7.3
-- **Database:** PostgreSQL 16 + PostGIS 3.4
-- **GIS Server:** GeoServer 2.26
-- **Frontend:** React + Leaflet (собранный билд)
-- **Web Server:** Nginx + Gunicorn
-- **Task Queue:** Celery + Redis
+### Backend
+- **Django 5** — основной фреймворк
+- **Wagtail 6** — CMS для управления контентом и геоисториями
+- **GeoServer** — публикация WMS/WFS слоёв
+- **PostgreSQL + PostGIS** — хранение геоданных
+- **Celery + Redis** — фоновые задачи
+- **Nginx + Gunicorn** — production сервер
+
+### Frontend (geoportal/)
+- **React 19** — UI библиотека
+- **Ant Design 6** — компоненты интерфейса
+- **Zustand** — управление состоянием
+- **React-Leaflet** — картографический движок
+- **Vite** — сборщик
 
 ## Структура проекта
 ```
 /opt/geoportal_admin/
-├── geoportal_admin/     # Настройки Django (settings, urls, wsgi)
-├── home/                # Wagtail CMS — страницы сайта
-│   ├── models.py        # HomePage, ContentPage, GeoStoryPage
-│   └── templates/       # Шаблоны страниц и блоков
-├── layers/              # GIS-слои и API геопортала
-│   ├── models.py        # MapProject, Layer, FeatureContent, LayerStyle
-│   ├── views.py         # REST API endpoints
-│   ├── serializers.py   # DRF сериализаторы
-│   ├── admin.py         # Django Admin для слоёв
-│   └── gdrive_utils.py  # Интеграция с Google Drive
-├── stories/             # Геоистории (в разработке)
-├── media/               # Загруженные файлы (не в Git)
-├── staticfiles/         # Собранная статика (не в Git)
-├── requirements.txt     # Python зависимости
-└── manage.py
-```
-
-## Внешние компоненты
-```
-/var/www/html/index.html  # React-геопортал (Leaflet карта)
-/etc/nginx/sites-available/reliefwestsib  # Nginx конфиг
-/etc/systemd/system/gunicorn.service      # Systemd сервис
+├── geoportal_admin/     # Django settings
+├── home/                # Wagtail home app
+├── stories/             # Геоистории (StoryMap)
+├── layers/              # Управление слоями GeoServer
+│   ├── models.py        # Layer, FeatureContent, LayerStyle
+│   ├── views.py         # API endpoints
+│   ├── geoserver_api.py # Интеграция с GeoServer
+│   └── gdrive_utils.py  # Google Drive галереи
+├── geoportal/           # React фронтенд
+│   ├── src/
+│   │   ├── main.jsx           # Entry point + ConfigProvider
+│   │   ├── App.jsx            # Layout (Header, Sider, Content)
+│   │   ├── config.js          # API, basemaps, defaults
+│   │   ├── store/index.js     # Zustand store
+│   │   ├── components/
+│   │   │   ├── MapView.jsx    # React-Leaflet карта
+│   │   │   ├── MapControls.jsx # Basemap, coords, legend
+│   │   │   ├── Sidebar.jsx    # Tabs + Search
+│   │   │   ├── LayerPanel.jsx # Список слоёв
+│   │   │   ├── FeatureInfo.jsx # Информация об объекте
+│   │   │   └── AttrTable.jsx  # Таблица атрибутов (Drawer)
+│   │   └── styles/index.css   # Minimal overrides
+│   └── dist/            # Production build
+├── config/              # Nginx, Gunicorn configs
+└── scripts/             # Утилиты
 ```
 
 ## API Endpoints
 
 | Endpoint | Описание |
 |----------|----------|
-| `GET /api/projects/` | Список картографических проектов |
-| `GET /api/projects/<slug>/` | Детали проекта со слоями |
-| `GET /api/layers/` | Список опубликованных слоёв |
-| `GET /api/layers/<slug>/` | Детали слоя |
-| `GET /api/features/<layer_slug>/<feature_id>/` | Контент объекта карты |
+| `/api/projects/` | Список проектов |
+| `/api/layers/` | Список слоёв с настройками стилей |
+| `/api/features/{layer_slug}/{feature_id}/` | Контент объекта (описание, галерея) |
+| `/geoserver/wms` | WMS сервис |
+| `/geoserver/wfs` | WFS сервис |
 
-## URL структура
-
-| URL | Назначение |
-|-----|------------|
-| `/` | Главная страница (Wagtail) |
-| `/cms/` | Админка Wagtail CMS |
-| `/admin/` | Django Admin (слои, стили) |
-| `/geoportal/` | Интерактивная карта |
-| `/geoserver/` | GeoServer (WMS/WFS) |
-| `/api/` | REST API |
-
-## Установка (development)
+## Деплой
 ```bash
-# Клонирование
-git clone <repo-url>
-cd geoportal_admin
-
-# Виртуальное окружение
-python3 -m venv venv
+# Backend
+cd /opt/geoportal_admin
 source venv/bin/activate
-
-# Зависимости
-pip install -r requirements.txt
-
-# База данных (PostgreSQL + PostGIS должны быть установлены)
-createdb geoportal
-psql geoportal -c "CREATE EXTENSION postgis;"
-
-# Миграции
 python manage.py migrate
+python manage.py collectstatic
 
-# Создание суперпользователя
-python manage.py createsuperuser
+# Frontend
+cd geoportal
+npm install
+npm run build
+cp -r dist/* /var/www/html/
 
-# Запуск
-python manage.py runserver
+# Services
+sudo systemctl restart gunicorn nginx
 ```
-
-## Деплой (production)
-```bash
-# Сбор статики
-python manage.py collectstatic --noinput
-
-# Перезапуск сервисов
-sudo systemctl restart gunicorn
-sudo systemctl restart nginx
-```
-
-## Резервное копирование
-```bash
-# База данных
-pg_dump geoportal > backup_$(date +%Y%m%d).sql
-
-# Медиафайлы
-tar -czf media_$(date +%Y%m%d).tar.gz /opt/geoportal_admin/media/
-```
-
-## Авторы
-
-- Kabanin — разработка, геоданные
 
 ## Лицензия
 
-MIT License
+MIT

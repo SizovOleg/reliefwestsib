@@ -198,3 +198,4 @@ WAGTAIL_CONTENT_LANGUAGES = [
 
 # Templates
 TEMPLATES[0]['DIRS'] = [BASE_DIR / 'home' / 'templates']
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
