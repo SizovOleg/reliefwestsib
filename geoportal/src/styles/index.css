@@ -132,31 +132,52 @@ html, body, #root { height: 100%; overflow: hidden; }
 }
 
 /* === Floating attribute table === */
-.attr-table-floating .ant-table-wrapper {
-    height: 100%;
+.attr-table-content-wrap {
+    overflow: hidden;
+    min-height: 0;
 }
-.attr-table-floating .ant-table {
-    height: 100%;
-}
-.attr-table-floating .ant-table-container {
+.attr-table-content-wrap .ant-table-wrapper {
     height: 100%;
     display: flex;
     flex-direction: column;
 }
-.attr-table-floating .ant-table-body {
+.attr-table-content-wrap .ant-table-wrapper .ant-spin-nested-loading,
+.attr-table-content-wrap .ant-table-wrapper .ant-spin-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.attr-table-content-wrap .ant-table {
+    flex: 1;
+    min-height: 0;
+}
+.attr-table-content-wrap .ant-table-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.attr-table-content-wrap .ant-table-header {
+    flex-shrink: 0;
+    overflow: hidden !important;
+}
+.attr-table-content-wrap .ant-table-body {
     flex: 1;
     overflow: auto !important;
     min-height: 0;
 }
-.attr-table-floating .ant-table-content {
-    overflow-x: auto !important;
+.attr-table-content-wrap .ant-table-content {
+    overflow: auto !important;
+    flex: 1;
+    min-height: 0;
+}
+.attr-table-content-wrap .ant-table-thead > tr > th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
 }
 .attr-table-floating .ant-table-pagination {
     margin: 4px 8px !important;
     flex-shrink: 0;
-}
-.attr-table-floating .ant-table-thead > tr > th {
-    position: relative;
 }
 
 /* === Column stats icon hover === */

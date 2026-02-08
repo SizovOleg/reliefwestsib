@@ -253,12 +253,15 @@ export default function AttrTable() {
 
     const tableContent = (
         <div
+            className="attr-table-content-wrap"
             style={{
                 flex: 1,
-                overflow: 'auto',
+                overflow: 'hidden',
                 background: token.colorBgContainer,
                 borderRadius: maximized ? 0 : '0 0 8px 8px',
                 minHeight: 0,
+                display: 'flex',
+                flexDirection: 'column',
             }}
         >
             <Table
@@ -269,7 +272,8 @@ export default function AttrTable() {
                 size="small"
                 loading={attrTableLoading}
                 rowSelection={rowSelection}
-                scroll={{ x: 'max-content', y: 'calc(100% - 56px)' }}
+                scroll={{ x: 'max-content' }}
+                sticky
                 pagination={{
                     pageSize: 50,
                     showSizeChanger: true,
