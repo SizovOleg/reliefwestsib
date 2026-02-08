@@ -101,6 +101,7 @@ export default function App() {
                     <MapView />
                     <AttrTable />
                 </Content>
+            </Layout>
         </Layout>
     );
 }
