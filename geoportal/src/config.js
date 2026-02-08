@@ -22,6 +22,11 @@ export const BASEMAPS = {
     topo: {
         name: 'Топокарта',
         url: 'https://reliefwestsib.ru/tiles/topo/{z}/{x}/{y}',
-        attribution: '© TopoMapper',
+        attribution: '© Генштаб',
+    },
+    dem: {
+        name: 'Рельеф',
+        url: 'https://reliefwestsib.ru/tiles/dem3/{z}/{x}/{y}.png',
+        attribution: '© TanDEM-X',
     },
 };

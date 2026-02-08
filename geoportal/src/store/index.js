@@ -3,13 +3,13 @@ import { API_BASE, GEOSERVER_WFS } from '../config';
 
 const useStore = create((set, get) => ({
     // ===== UI =====
-    darkTheme: localStorage.getItem('theme') !== 'light',
+    darkTheme: localStorage.getItem('geoportal-theme') === 'dark',
     sidebarCollapsed: false,
     activeTab: 'info',
     
     toggleTheme: () => {
         const next = !get().darkTheme;
-        localStorage.setItem('theme', next ? 'dark' : 'light');
+        localStorage.setItem('geoportal-theme', next ? 'dark' : 'light');
         set({ darkTheme: next });
     },
     setSidebarCollapsed: (v) => set({ sidebarCollapsed: v }),
@@ -58,7 +58,7 @@ const useStore = create((set, get) => ({
         }
         
         const props = feature.properties || {};
-        const featureId = props.gid || props.id || (feature.id?.split('.').pop());
+        const featureId = props.gid || feature.id?.split('.').pop();
         
         set({
             selectedFeature: { ...feature, layer, featureId },
