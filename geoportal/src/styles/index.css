@@ -146,6 +146,10 @@ html, body, #root { height: 100%; overflow: hidden; }
 .attr-table-floating .ant-table-body {
     flex: 1;
     overflow: auto !important;
+    min-height: 0;
+}
+.attr-table-floating .ant-table-content {
+    overflow-x: auto !important;
 }
 .attr-table-floating .ant-table-pagination {
     margin: 4px 8px !important;

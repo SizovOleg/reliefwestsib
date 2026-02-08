@@ -255,9 +255,10 @@ export default function AttrTable() {
         <div
             style={{
                 flex: 1,
-                overflow: 'hidden',
+                overflow: 'auto',
                 background: token.colorBgContainer,
                 borderRadius: maximized ? 0 : '0 0 8px 8px',
+                minHeight: 0,
             }}
         >
             <Table
