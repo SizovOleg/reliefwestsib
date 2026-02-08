@@ -16,14 +16,20 @@ const { Text } = Typography;
 const DEFAULT_COL_WIDTH = 150;
 const MIN_COL_WIDTH = 60;
 
-// Resizable header cell
+// Resizable header cell — prevent resize drag from triggering column sort
 function ResizableTitle({ onResize, width, ...restProps }) {
     if (!width) return <th {...restProps} />;
     return (
         <Resizable
             width={width}
             height={0}
-            handle={<span className="react-resizable-handle" onClick={(e) => e.stopPropagation()} />}
+            handle={
+                <span
+                    className="react-resizable-handle"
+                    onClick={(e) => e.stopPropagation()}
+                    onMouseDown={(e) => e.stopPropagation()}
+                />
+            }
             onResize={onResize}
             draggableOpts={{ enableUserSelectHack: false }}
         >
