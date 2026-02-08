@@ -16,7 +16,10 @@ const { Text } = Typography;
 const DEFAULT_COL_WIDTH = 150;
 const MIN_COL_WIDTH = 60;
 
-// Resizable header cell — prevent resize drag from triggering column sort
+// Track resize state globally so click on <th> can be suppressed after resize
+let resizingFlag = false;
+
+// Resizable header cell — block sort while resizing
 function ResizableTitle({ onResize, width, ...restProps }) {
     if (!width) return <th {...restProps} />;
     return (
@@ -30,10 +33,22 @@ function ResizableTitle({ onResize, width, ...restProps }) {
                     onMouseDown={(e) => e.stopPropagation()}
                 />
             }
+            onResizeStart={() => { resizingFlag = true; }}
+            onResizeStop={() => { setTimeout(() => { resizingFlag = false; }, 300); }}
             onResize={onResize}
             draggableOpts={{ enableUserSelectHack: false }}
         >
-            <th {...restProps} />
+            <th
+                {...restProps}
+                onClick={(e) => {
+                    if (resizingFlag) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                        return;
+                    }
+                    restProps.onClick?.(e);
+                }}
+            />
         </Resizable>
     );
 }
