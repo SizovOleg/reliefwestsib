@@ -87,26 +87,35 @@ const useStore = create((set, get) => ({
     // ===== Attribute Table =====
     attrTableLayer: null,
     attrTableData: [],
+    attrTableGeometries: {}, // { [_key]: geometry }
     attrTableLoading: false,
-    
+    highlightedFeature: null, // { geometry, id }
+
     openAttrTable: async (layer) => {
-        set({ attrTableLayer: layer, attrTableData: [], attrTableLoading: true });
-        
+        set({ attrTableLayer: layer, attrTableData: [], attrTableGeometries: {}, attrTableLoading: true });
+
         try {
             const url = `${GEOSERVER_WFS}?service=WFS&version=1.1.0&request=GetFeature&typeName=${layer.geoserver_layer_name}&outputFormat=application/json&srsName=EPSG:4326`;
             const res = await fetch(url);
             const geojson = await res.json();
-            const data = (geojson.features || []).map((f, i) => ({
-                _key: f.id || i,
-                ...f.properties,
-            }));
-            set({ attrTableData: data, attrTableLoading: false });
+            const geometries = {};
+            const data = (geojson.features || []).map((f, i) => {
+                const key = f.id || i;
+                geometries[key] = f.geometry;
+                return {
+                    _key: key,
+                    ...f.properties,
+                };
+            });
+            set({ attrTableData: data, attrTableGeometries: geometries, attrTableLoading: false });
         } catch {
             set({ attrTableLoading: false });
         }
     },
-    
-    closeAttrTable: () => set({ attrTableLayer: null, attrTableData: [] }),
+
+    closeAttrTable: () => set({ attrTableLayer: null, attrTableData: [], attrTableGeometries: {}, highlightedFeature: null }),
+
+    setHighlightedFeature: (feature) => set({ highlightedFeature: feature }),
 
     // ===== Search =====
     searchQuery: '',

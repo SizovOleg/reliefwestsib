@@ -96,14 +96,11 @@ export default function App() {
                     }}
                 />
                 
-                {/* Map */}
+                {/* Map + floating attribute table */}
                 <Content style={{ position: 'relative' }}>
                     <MapView />
+                    <AttrTable />
                 </Content>
-            </Layout>
-            
-            {/* Attribute table drawer */}
-            <AttrTable />
         </Layout>
     );
 }

@@ -111,6 +111,44 @@ function RasterLayer({ layer, visible }) {
     );
 }
 
+// Highlight layer for selected feature from attribute table
+function HighlightLayer() {
+    const highlightedFeature = useStore((s) => s.highlightedFeature);
+
+    if (!highlightedFeature?.geometry) return null;
+
+    const geojson = {
+        type: 'Feature',
+        geometry: highlightedFeature.geometry,
+        properties: {},
+    };
+
+    const highlightStyle = {
+        color: '#ffeb3b',
+        weight: 4,
+        fillColor: '#ffeb3b',
+        fillOpacity: 0.3,
+        dashArray: '6, 4',
+    };
+
+    return (
+        <GeoJSON
+            key={`highlight-${highlightedFeature.id}`}
+            data={geojson}
+            style={() => highlightStyle}
+            pointToLayer={(_, latlng) =>
+                L.circleMarker(latlng, {
+                    radius: 12,
+                    color: '#ffeb3b',
+                    weight: 3,
+                    fillColor: '#ffeb3b',
+                    fillOpacity: 0.35,
+                })
+            }
+        />
+    );
+}
+
 // Main map component
 export default function MapView() {
     const mapCenter = useStore((s) => s.mapCenter);
@@ -119,13 +157,13 @@ export default function MapView() {
     const layers = useStore((s) => s.layers);
     const visibility = useStore((s) => s.visibility);
     const selectFeature = useStore((s) => s.selectFeature);
-    
+
     const basemapCfg = BASEMAPS[basemap] || BASEMAPS.osm;
-    
+
     const onFeatureClick = useCallback((feature, layer) => {
         selectFeature(feature, layer);
     }, [selectFeature]);
-    
+
     return (
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
             <MapContainer
@@ -136,18 +174,20 @@ export default function MapView() {
             >
                 <MapSync />
                 <ScaleControl position="bottomleft" metric imperial={false} />
-                
+
                 <TileLayer key={basemap} url={basemapCfg.url} attribution={basemapCfg.attribution} />
-                
+
                 {layers.filter(l => l.geom_type === 'raster').map(l => (
                     <RasterLayer key={l.id} layer={l} visible={visibility[l.id]} />
                 ))}
-                
+
                 {layers.filter(l => l.geom_type !== 'raster').map(l => (
                     <VectorLayer key={l.id} layer={l} visible={visibility[l.id]} onFeatureClick={onFeatureClick} />
                 ))}
+
+                <HighlightLayer />
             </MapContainer>
-            
+
             <MapControls />
         </div>
     );

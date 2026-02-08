@@ -96,6 +96,58 @@ html, body, #root { height: 100%; overflow: hidden; }
     max-width: 220px;
 }
 
+/* === react-resizable column handles === */
+.react-resizable {
+    position: relative;
+}
+.react-resizable-handle {
+    position: absolute;
+    right: -5px;
+    bottom: 0;
+    width: 10px;
+    height: 100%;
+    cursor: col-resize;
+    z-index: 1;
+}
+.react-resizable-handle::after {
+    content: '';
+    position: absolute;
+    right: 4px;
+    top: 25%;
+    height: 50%;
+    width: 2px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 1px;
+    transition: background 0.2s;
+}
+.react-resizable-handle:hover::after {
+    background: rgba(74, 144, 164, 0.6);
+}
+
+/* === Floating attribute table === */
+.attr-table-floating .ant-table-wrapper {
+    height: 100%;
+}
+.attr-table-floating .ant-table {
+    height: 100%;
+}
+.attr-table-floating .ant-table-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.attr-table-floating .ant-table-body {
+    flex: 1;
+    overflow: auto !important;
+}
+.attr-table-floating .ant-table-pagination {
+    margin: 4px 8px !important;
+    flex-shrink: 0;
+}
+.attr-table-floating .ant-table-thead > tr > th {
+    position: relative;
+}
+
 /* Sider tabs stretch */
 .sidebar-tabs {
     display: flex;
