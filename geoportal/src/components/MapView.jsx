@@ -111,17 +111,24 @@ function RasterLayer({ layer, visible }) {
     );
 }
 
-// Highlight layer for selected feature from attribute table
+// Highlight layer for selected features from attribute table (multi-select)
 function HighlightLayer() {
-    const highlightedFeature = useStore((s) => s.highlightedFeature);
+    const highlightedFeatures = useStore((s) => s.highlightedFeatures);
 
-    if (!highlightedFeature?.geometry) return null;
+    if (!highlightedFeatures || highlightedFeatures.length === 0) return null;
 
     const geojson = {
-        type: 'Feature',
-        geometry: highlightedFeature.geometry,
-        properties: {},
+        type: 'FeatureCollection',
+        features: highlightedFeatures
+            .filter((f) => f.geometry)
+            .map((f) => ({
+                type: 'Feature',
+                geometry: f.geometry,
+                properties: {},
+            })),
     };
+
+    if (geojson.features.length === 0) return null;
 
     const highlightStyle = {
         color: '#ffeb3b',
@@ -131,9 +138,11 @@ function HighlightLayer() {
         dashArray: '6, 4',
     };
 
+    const keyStr = highlightedFeatures.map((f) => f.id).join(',');
+
     return (
         <GeoJSON
-            key={`highlight-${highlightedFeature.id}`}
+            key={`highlight-${keyStr}`}
             data={geojson}
             style={() => highlightStyle}
             pointToLayer={(_, latlng) =>

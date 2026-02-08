@@ -155,6 +155,30 @@ html, body, #root { height: 100%; overflow: hidden; }
     position: relative;
 }
 
+/* === Column stats icon hover === */
+.col-stats-icon {
+    transition: opacity 0.2s;
+}
+.col-stats-icon:hover {
+    opacity: 0.9 !important;
+}
+
+/* === Query builder panel === */
+.attr-query-builder .ant-select-selector,
+.attr-query-builder .ant-input,
+.attr-query-builder .ant-input-number {
+    font-size: 12px !important;
+}
+
+/* === Chart floating window === */
+.chart-floating .recharts-cartesian-grid-horizontal line,
+.chart-floating .recharts-cartesian-grid-vertical line {
+    stroke: rgba(255,255,255,0.06);
+}
+.chart-floating .recharts-tooltip-cursor {
+    fill: rgba(74, 144, 164, 0.15);
+}
+
 /* Sider tabs stretch */
 .sidebar-tabs {
     display: flex;

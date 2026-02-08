@@ -89,10 +89,27 @@ const useStore = create((set, get) => ({
     attrTableData: [],
     attrTableGeometries: {}, // { [_key]: geometry }
     attrTableLoading: false,
-    highlightedFeature: null, // { geometry, id }
+
+    // Multi-select
+    selectedRowKeys: [],
+    highlightedFeatures: [], // [{ geometry, id }]
+
+    // Query builder
+    queryConditions: [],   // [{ id, field, operator, value }]
+    queryLogic: 'AND',     // 'AND' | 'OR'
+    queryBuilderOpen: false,
+
+    // Column chart
+    chartColumn: null,
+    chartOpen: false,
 
     openAttrTable: async (layer) => {
-        set({ attrTableLayer: layer, attrTableData: [], attrTableGeometries: {}, attrTableLoading: true });
+        set({
+            attrTableLayer: layer, attrTableData: [], attrTableGeometries: {},
+            attrTableLoading: true, selectedRowKeys: [], highlightedFeatures: [],
+            queryConditions: [], queryLogic: 'AND', queryBuilderOpen: false,
+            chartColumn: null, chartOpen: false,
+        });
 
         try {
             const url = `${GEOSERVER_WFS}?service=WFS&version=1.1.0&request=GetFeature&typeName=${layer.geoserver_layer_name}&outputFormat=application/json&srsName=EPSG:4326`;
@@ -102,10 +119,7 @@ const useStore = create((set, get) => ({
             const data = (geojson.features || []).map((f, i) => {
                 const key = f.id || i;
                 geometries[key] = f.geometry;
-                return {
-                    _key: key,
-                    ...f.properties,
-                };
+                return { _key: key, ...f.properties };
             });
             set({ attrTableData: data, attrTableGeometries: geometries, attrTableLoading: false });
         } catch {
@@ -113,9 +127,43 @@ const useStore = create((set, get) => ({
         }
     },
 
-    closeAttrTable: () => set({ attrTableLayer: null, attrTableData: [], attrTableGeometries: {}, highlightedFeature: null }),
+    closeAttrTable: () => set({
+        attrTableLayer: null, attrTableData: [], attrTableGeometries: {},
+        highlightedFeatures: [], selectedRowKeys: [],
+        queryConditions: [], queryLogic: 'AND', queryBuilderOpen: false,
+        chartColumn: null, chartOpen: false,
+    }),
 
-    setHighlightedFeature: (feature) => set({ highlightedFeature: feature }),
+    // Selection actions
+    setSelectedRowKeys: (keys) => set({ selectedRowKeys: keys }),
+    toggleRowSelection: (key) => {
+        const current = get().selectedRowKeys;
+        set({
+            selectedRowKeys: current.includes(key)
+                ? current.filter((k) => k !== key)
+                : [...current, key],
+        });
+    },
+    clearRowSelection: () => set({ selectedRowKeys: [], highlightedFeatures: [] }),
+
+    // Highlight actions
+    setHighlightedFeatures: (features) => set({ highlightedFeatures: features }),
+    syncHighlightsFromSelection: () => {
+        const { selectedRowKeys, attrTableGeometries } = get();
+        const features = selectedRowKeys
+            .filter((key) => attrTableGeometries[key])
+            .map((key) => ({ geometry: attrTableGeometries[key], id: key }));
+        set({ highlightedFeatures: features });
+    },
+
+    // Query builder actions
+    setQueryConditions: (conditions) => set({ queryConditions: conditions }),
+    setQueryLogic: (logic) => set({ queryLogic: logic }),
+    setQueryBuilderOpen: (open) => set({ queryBuilderOpen: open }),
+
+    // Chart actions
+    openChart: (columnKey) => set({ chartColumn: columnKey, chartOpen: true }),
+    closeChart: () => set({ chartColumn: null, chartOpen: false }),
 
     // ===== Search =====
     searchQuery: '',
