@@ -109,26 +109,28 @@ html, body, #root { height: 100%; overflow: hidden; }
 }
 .react-resizable-handle {
     position: absolute;
-    right: -5px;
+    right: -8px;
     bottom: 0;
-    width: 10px;
+    width: 16px;
     height: 100%;
     cursor: col-resize;
-    z-index: 1;
+    z-index: 3;
 }
 .react-resizable-handle::after {
     content: '';
     position: absolute;
-    right: 4px;
-    top: 25%;
-    height: 50%;
+    right: 7px;
+    top: 20%;
+    height: 60%;
     width: 2px;
-    background: rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.12);
     border-radius: 1px;
-    transition: background 0.2s;
+    transition: background 0.2s, height 0.2s;
 }
 .react-resizable-handle:hover::after {
-    background: rgba(74, 144, 164, 0.6);
+    background: rgba(74, 144, 164, 0.7);
+    top: 10%;
+    height: 80%;
 }
 
 /* === Floating attribute table === */
